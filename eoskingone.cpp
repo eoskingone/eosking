@@ -69,7 +69,15 @@ void eoskingone::onTransfer(const currency::transfer &transfer)
     std::vector<std::string> results;
     // use custom split function as we save 20 KiB RAM this way
     // boost::split(results, transfer.memo, [](const char c) { return c == ';'; });
-    splitMemo(results, transfer.memo);
+    
+    if(transfer.memo.find(';') == string::npos)
+    {
+        splitMemo(results, ";;");	 
+    }	
+    else
+    { 
+        splitMemo(results, transfer.memo);
+    }    
     eosio_assert(results.size() >= 2, "transfer memo needs two arguments separated by ';'");
     // displayName <= 100 and imageid must be a uuid-v4
     eosio_assert(results[0].length() <= 100 && (results[1].length() == 0 || results[1].length() == 36), "kingdom arguments failed the size requirements");
